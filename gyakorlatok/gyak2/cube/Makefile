@@ -1,2 +1,2 @@
 all:
-	gcc -I../utils cube.c
+	gcc -I../utils cube.c -lSDL2

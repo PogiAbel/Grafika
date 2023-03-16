@@ -11,6 +11,14 @@ typedef struct Circle
 	double radius;
 } Circle;
 
+typedef struct Color
+{
+    int r;
+    int g;
+    int b;
+    int a;
+} Color;
+
 /**
  * Set the data of the circle
  */

@@ -56,6 +56,12 @@ void handle_game_events(Game* game)
                 printf("Resetting ball position\n");
                 reset_ball(&(game->pong.ball));
                 break;
+            case SDL_SCANCODE_UP:
+                game->pong.ball.radius += 10;
+                break;
+            case SDL_SCANCODE_DOWN:
+                game->pong.ball.radius -= 10;
+                break;
             default:
                 break;
             }

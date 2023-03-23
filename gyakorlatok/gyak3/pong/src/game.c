@@ -57,10 +57,12 @@ void handle_game_events(Game* game)
                 reset_ball(&(game->pong.ball));
                 break;
             case SDL_SCANCODE_UP:
-                game->pong.ball.radius += 10;
+                if(game->pong.ball.radius<150)
+                    game->pong.ball.radius += 10;
                 break;
             case SDL_SCANCODE_DOWN:
-                game->pong.ball.radius -= 10;
+                if(game->pong.ball.radius>10)
+                    game->pong.ball.radius -= 10;
                 break;
             default:
                 break;

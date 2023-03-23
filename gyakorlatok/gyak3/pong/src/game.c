@@ -53,8 +53,7 @@ void handle_game_events(Game* game)
                 set_left_pad_speed(&(game->pong), +200);
                 break;
             case SDL_SCANCODE_R:
-                printf("Resetting ball position\n");
-                reset_ball(&(game->pong.ball));
+                init_ball(&(game->pong.ball), (float)game->pong.width / 2, (float)game->pong.height / 2);
                 break;
             case SDL_SCANCODE_UP:
                 if(game->pong.ball.radius<150)
@@ -81,6 +80,9 @@ void handle_game_events(Game* game)
         case SDL_MOUSEMOTION:
             SDL_GetMouseState(&x, &y);
             set_right_pad_position(&(game->pong), y);
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            init_ball(&(game->pong.ball), event.button.x, event.button.y);
             break;
         case SDL_QUIT:
             game->is_running = false;

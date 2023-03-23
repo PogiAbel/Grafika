@@ -7,7 +7,7 @@ void init_pong(Pong* pong, int width, int height)
     pong->height = height;
     init_pad(&(pong->left_pad), 0, height, RED_THEME);
     init_pad(&(pong->right_pad), width - 50, height, GREEN_THEME);
-    init_ball(&(pong->ball), width / 2, height / 2);
+    init_ball(&(pong->ball), (float)width / 2, (float)height / 2);
 }
 
 void update_pong(Pong* pong, double time)
@@ -54,7 +54,7 @@ void bounce_ball(Pong* pong)
         pong->ball.speed_x *= -1;
 
         if(pong->ball.y < pong->left_pad.y || pong->ball.y > pong->left_pad.y+pong->left_pad.height){
-            printf("Ball hit wall");     
+            printf("Ball hit wall\n");     
             pong->ball.speed_x *= 0;
             pong->ball.speed_y *= 0;
         }
@@ -64,7 +64,7 @@ void bounce_ball(Pong* pong)
         pong->ball.speed_x *= -1;
 
         if(pong->ball.y < pong->right_pad.y || pong->ball.y > pong->right_pad.y+pong->right_pad.height ){
-            printf("Ball hit wall");
+            printf("Ball hit wall\n");
             pong->ball.speed_x *= 0;
             pong->ball.speed_y *= 0;
         }

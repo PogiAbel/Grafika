@@ -4,7 +4,7 @@
 
 #include <math.h>
 
-#define BALL_SPEED 200
+#define BALL_SPEED 100
 
 void init_ball(Ball* ball, float x, float y)
 {
@@ -19,15 +19,6 @@ void update_ball(Ball* ball, double time)
 {
     ball->x += ball->speed_x * time;
     ball->y += ball->speed_y * time;
-}
-
-void reset_ball(Ball* ball)
-{
-    ball->x = 200;
-    ball->y = 200;
-    ball->radius = 50;
-    ball->speed_x = BALL_SPEED;
-    ball->speed_y = BALL_SPEED;
 }
 
 void render_ball(Ball* ball)

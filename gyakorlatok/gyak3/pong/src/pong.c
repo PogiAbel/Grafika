@@ -54,9 +54,8 @@ void bounce_ball(Pong* pong)
         pong->ball.speed_x *= -1;
 
         if(pong->ball.y < pong->left_pad.y || pong->ball.y > pong->left_pad.y+pong->left_pad.height){
-            printf("Ball hit wall\n");     
-            pong->ball.speed_x *= 0;
-            pong->ball.speed_y *= 0;
+            printf("Ball hit wall\n");
+           stop_ball(&(pong->ball));
         }
     }
     if (pong->ball.x + pong->ball.radius > pong->width - 50) {
@@ -65,8 +64,7 @@ void bounce_ball(Pong* pong)
 
         if(pong->ball.y < pong->right_pad.y || pong->ball.y > pong->right_pad.y+pong->right_pad.height ){
             printf("Ball hit wall\n");
-            pong->ball.speed_x *= 0;
-            pong->ball.speed_y *= 0;
+           stop_ball(&(pong->ball));
         }
     }
     if (pong->ball.y - pong->ball.radius < 0) {

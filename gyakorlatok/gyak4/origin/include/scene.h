@@ -2,9 +2,11 @@
 #define SCENE_H
 
 #include "camera.h"
+#include "sphere.h"
 
 typedef struct Scene
 {
+    Sphere sphere;
 } Scene;
 
 /**
@@ -20,7 +22,7 @@ void update_scene(Scene* scene);
 /**
  * Render the scene objects.
  */
-void render_scene(const Scene* scene);
+void render_scene(Scene* scene);
 
 /**
  * Draw the origin of the world coordinate system.

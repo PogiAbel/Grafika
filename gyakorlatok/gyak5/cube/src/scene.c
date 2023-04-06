@@ -39,10 +39,6 @@ void init_scene(Scene* scene)
     //load_model(&(scene->model2), "assets/models/cube.obj");
     scene->texture_id = load_texture("assets/textures/cube.png");
     //scale_model(&(scene->model[0]), 2.0, 2.0, 2.0);
-    rotate_model_y(&(scene->model1), 90.0f);
-    move_model(&(scene->model1), 2.0f, 0.0f, 0.0f);
-
-
 
     glBindTexture(GL_TEXTURE_2D, scene->texture_id);
 
@@ -103,6 +99,8 @@ void set_material(const Material* material)
 
 void update_scene(Scene* scene)
 {
+    // rotate
+    //rotate_model_y(&(scene->model1), 10.0f);
 }
 
 void render_scene(Scene* scene)

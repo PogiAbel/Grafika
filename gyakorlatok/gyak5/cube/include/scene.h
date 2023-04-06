@@ -44,4 +44,14 @@ void render_scene(Scene* scene);
  */
 void draw_origin();
 
+/**
+ * Move model.
+ */
+void move_model(Model* model, float dx, float dy, float dz);
+
+/**
+ * Rotate model.
+ */
+void rotate_model_y(Model* model, float angle);
+
 #endif /* SCENE_H */

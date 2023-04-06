@@ -1,6 +1,7 @@
 #include "app.h"
 #include "camera.h"
 #include "stdio.h"
+#include "scene.h"
 
 #include <SDL2/SDL_image.h>
 
@@ -126,6 +127,18 @@ void handle_app_events(App* app)
                 break;
             case SDL_SCANCODE_D:
                 set_camera_side_speed(&(app->camera), -1);
+                break;
+            case SDL_SCANCODE_UP:
+                move_model(&(app->scene.model1), 0.0, 0.5, 0.0);
+                break;
+            case SDL_SCANCODE_DOWN:
+                move_model(&(app->scene.model1), 0.0, -0.5, 0.0);
+                break;
+            case SDL_SCANCODE_LEFT:
+                move_model(&(app->scene.model1), -0.5, 0.0, 0.0);
+                break;
+            case SDL_SCANCODE_RIGHT:
+                move_model(&(app->scene.model1), 0.5, 0.0, 0.0);
                 break;
             default:
                 break;

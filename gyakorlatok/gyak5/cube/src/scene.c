@@ -3,13 +3,35 @@
 #include <obj/load.h>
 #include <obj/draw.h>
 #include <obj/transform.h>
+#include <math.h>
+
+#define PI 3.14159265358979323846
+
+void rotate_model_y(Model* model, float angle)
+{
+    float radian = angle * (PI / 180.0f);
+    float cosine = cosf(radian);
+    float sine = sinf(radian);
+
+    for (int i = 0; i < model->n_vertices; i++) {
+        float x = model->vertices[i].x;
+        float y = model->vertices[i].y;
+        float z = model->vertices[i].z;
+
+        model->vertices[i].x = x * cosine + z * sine;
+        model->vertices[i].y = y;
+        model->vertices[i].z = z * cosine - x * sine;
+    }
+}
 
 void init_scene(Scene* scene)
 {
     load_model(&(scene->model1), "assets/models/cat.obj");
-    load_model(&(scene->model2), "assets/models/cube.obj");
+    //load_model(&(scene->model2), "assets/models/cube.obj");
     scene->texture_id = load_texture("assets/textures/cube.png");
     //scale_model(&(scene->model[0]), 2.0, 2.0, 2.0);
+    rotate_model_y(&(scene->model1), 90.0f);
+
 
 
     glBindTexture(GL_TEXTURE_2D, scene->texture_id);
@@ -79,7 +101,7 @@ void render_scene(Scene* scene)
     set_lighting();
     draw_origin();
     draw_model(&(scene->model1));
-    draw_model(&(scene->model2));
+    //draw_model(&(scene->model2));
 }
 
 void draw_origin()

@@ -8,7 +8,8 @@
 
 typedef struct Scene
 {
-    Model model;
+    Model model1;
+    Model model2;
     Material material;
     GLuint texture_id;
 } Scene;

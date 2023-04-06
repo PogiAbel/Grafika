@@ -6,9 +6,10 @@
 
 void init_scene(Scene* scene)
 {
-    load_model(&(scene->model), "assets/models/cat.obj");
-    //scene->texture_id = load_texture("assets/textures/cube.png");
-    scale_model(&(scene->model), 2.0, 2.0, 2.0);
+    load_model(&(scene->model1), "assets/models/cat.obj");
+    load_model(&(scene->model2), "assets/models/cube.obj");
+    scene->texture_id = load_texture("assets/textures/cube.png");
+    //scale_model(&(scene->model[0]), 2.0, 2.0, 2.0);
 
 
     glBindTexture(GL_TEXTURE_2D, scene->texture_id);
@@ -77,7 +78,8 @@ void render_scene(Scene* scene)
     set_material(&(scene->material));
     set_lighting();
     draw_origin();
-    draw_model(&(scene->model));
+    draw_model(&(scene->model1));
+    draw_model(&(scene->model2));
 }
 
 void draw_origin()

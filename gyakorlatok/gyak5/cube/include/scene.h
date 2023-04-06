@@ -8,7 +8,7 @@
 
 typedef struct Scene
 {
-    Model cube;
+    Model model;
     Material material;
     GLuint texture_id;
 } Scene;
@@ -36,7 +36,7 @@ void update_scene(Scene* scene);
 /**
  * Render the scene objects.
  */
-void render_scene(const Scene* scene);
+void render_scene(Scene* scene);
 
 /**
  * Draw the origin of the world coordinate system.

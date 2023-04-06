@@ -1,12 +1,15 @@
 #include "scene.h"
 
-#include "obj/load.h"
+#include <obj/load.h>
 #include <obj/draw.h>
+#include <obj/transform.h>
 
 void init_scene(Scene* scene)
 {
-    load_model(&(scene->cube), "assets/models/cube.obj");
-    scene->texture_id = load_texture("assets/textures/cube.png");
+    load_model(&(scene->model), "assets/models/cat.obj");
+    //scene->texture_id = load_texture("assets/textures/cube.png");
+    scale_model(&(scene->model), 2.0, 2.0, 2.0);
+
 
     glBindTexture(GL_TEXTURE_2D, scene->texture_id);
 
@@ -69,12 +72,12 @@ void update_scene(Scene* scene)
 {
 }
 
-void render_scene(const Scene* scene)
+void render_scene(Scene* scene)
 {
     set_material(&(scene->material));
     set_lighting();
     draw_origin();
-    draw_model(&(scene->cube));
+    draw_model(&(scene->model));
 }
 
 void draw_origin()

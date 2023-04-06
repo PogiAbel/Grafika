@@ -24,6 +24,15 @@ void rotate_model_y(Model* model, float angle)
     }
 }
 
+void move_model(Model* model, float dx, float dy, float dz) {
+    for (int i = 0; i < model->n_vertices; i++) {
+        model->vertices[i].x += dx;
+        model->vertices[i].y += dy;
+        model->vertices[i].z += dz;
+    }
+}
+
+
 void init_scene(Scene* scene)
 {
     load_model(&(scene->model1), "assets/models/cat.obj");
@@ -31,6 +40,7 @@ void init_scene(Scene* scene)
     scene->texture_id = load_texture("assets/textures/cube.png");
     //scale_model(&(scene->model[0]), 2.0, 2.0, 2.0);
     rotate_model_y(&(scene->model1), 90.0f);
+    move_model(&(scene->model1), 2.0f, 0.0f, 0.0f);
 
 
 

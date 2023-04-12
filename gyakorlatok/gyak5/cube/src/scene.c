@@ -35,9 +35,9 @@ void move_model(Model* model, float dx, float dy, float dz) {
 
 void init_scene(Scene* scene)
 {
-    load_model(&(scene->model1), "assets/models/cat.obj");
+    load_model(&(scene->model1), "assets/models/house.obj");
     //load_model(&(scene->model2), "assets/models/cube.obj");
-    scene->texture_id = load_texture("assets/textures/cube.png");
+    //scene->texture_id = load_texture("assets/textures/cube.png");
     //scale_model(&(scene->model[0]), 2.0, 2.0, 2.0);
 
     glBindTexture(GL_TEXTURE_2D, scene->texture_id);

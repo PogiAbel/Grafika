@@ -108,6 +108,7 @@ void handle_app_events(App* app)
     static int mouse_y = 0;
     int x;
     int y;
+    static int model = 0;
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -139,6 +140,10 @@ void handle_app_events(App* app)
                 break;
             case SDL_SCANCODE_RIGHT:
                 move_model(&(app->scene.model1), 0.5, 0.0, 0.0);
+                break;
+            case SDL_SCANCODE_V:
+                model = (1 - model);
+                glBindTexture(GL_TEXTURE_2D, app->scene.texture_id[model]);
                 break;
             default:
                 break;

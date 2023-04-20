@@ -24,8 +24,25 @@ void rotate_model_y(Model* model, float angle)
     }
 }
 
-void move_model(Model* model, float dx, float dy, float dz) {
+void rotate_model_x(Model* model, float angle)
+{
+    float radian = angle * (PI / 180.0f);
+    float cosine = cosf(radian);
+    float sine = sinf(radian);
+
     for (int i = 0; i < model->n_vertices; i++) {
+        float x = model->vertices[i].x;
+        float y = model->vertices[i].y;
+        float z = model->vertices[i].z;
+
+        model->vertices[i].x = x;
+        model->vertices[i].y = y * cosine - z * sine;
+        model->vertices[i].z = y * sine + z * cosine;
+    }
+}
+
+void move_model(Model* model, float dx, float dy, float dz) {
+    for (int i = 1; i <= model->n_vertices; i++) {
         model->vertices[i].x += dx;
         model->vertices[i].y += dy;
         model->vertices[i].z += dz;
@@ -35,34 +52,36 @@ void move_model(Model* model, float dx, float dy, float dz) {
 
 void init_scene(Scene* scene)
 {
-    load_model(&(scene->model1), "assets/models/house.obj");
+    load_model(&(scene->model1), "assets/models/cube.obj");
     //load_model(&(scene->model2), "assets/models/cube.obj");
-    //scene->texture_id = load_texture("assets/textures/cube.png");
+    scene->texture_id[0] = load_texture("assets/textures/chess.jpg");
+    scene->texture_id[1] = load_texture("assets/textures/fox_texture.png");
+
     //scale_model(&(scene->model[0]), 2.0, 2.0, 2.0);
 
-    glBindTexture(GL_TEXTURE_2D, scene->texture_id);
+    glBindTexture(GL_TEXTURE_2D, scene->texture_id[0]);
 
     scene->material.ambient.red = 0.0;
-    scene->material.ambient.green = 0.0;
+    scene->material.ambient.green = 1.0;
     scene->material.ambient.blue = 0.0;
 
     scene->material.diffuse.red = 1.0;
     scene->material.diffuse.green = 1.0;
-    scene->material.diffuse.blue = 0.0;
+    scene->material.diffuse.blue = 1.0;
 
     scene->material.specular.red = 0.0;
     scene->material.specular.green = 0.0;
-    scene->material.specular.blue = 0.0;
+    scene->material.specular.blue = 1.0;
 
     scene->material.shininess = 0.0;
 }
 
 void set_lighting()
 {
-    float ambient_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    float diffuse_light[] = { 1.0f, 1.0f, 1.0, 1.0f };
+    float ambient_light[] = { 0.0f, 5.0f, 0.0f, 1.0f };
+    float diffuse_light[] = { 5.0f, 5.0f, 5.0f, 1.0f };
     float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    float position[] = { 0.0f, 0.0f, 10.0f, 1.0f };
+    float position[] = { -5.0f, 0.0f, 5.0f, 1.0f };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
@@ -100,7 +119,9 @@ void set_material(const Material* material)
 void update_scene(Scene* scene)
 {
     // rotate
-    //rotate_model_y(&(scene->model1), 10.0f);
+    // rotate_model_x(&(scene->model1), 5.0f);
+    // rotate_model_y(&(scene->model1), 2.0f);
+
 }
 
 void render_scene(Scene* scene)

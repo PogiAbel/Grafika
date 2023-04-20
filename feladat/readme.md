@@ -1,9 +1,6 @@
 ## Féléves feladat
 # ötletek
 
-Egy digitális múzeum szerű szoba lenne az alapja.
-A szobában lenne négy oldalt négy ablak, amik négy külön szobába nyitnak belátást.
-A négy szobában négy különböző dolog lenne, pl tábortűz, mozgó objektumok vagy valamik
-Az ablak mellett lennének instrukciók hogyan lehet a szobában lévő objektumokkal interakcióba lépni.
-
-Lehet a szobában sétálni és a 4 szobában lévő objektumokat változtatni.
+Egy hosszab szoba amelynek két végében lenne két objektum egy tábortűz és egy mozgó 3d-s obejmtum(nehézségtől függően csak az egyik).
+Interakció az objektumokkal és az instrukciók a falon.
+Lehet a szobában sétálni és a szobában lévő objektumokat változtatni.

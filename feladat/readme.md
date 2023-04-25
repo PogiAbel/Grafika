@@ -1,7 +1,8 @@
 ## Féléves feladat
 
-Egy szoba amelyben tábortűz ogjektum van. Tüzet és füstöt szimuláló objektek animációja.
+Egy szoba amelyben tábortűz objektum van. Tüzet és füstöt szimuláló objektek animációja.
 Instrukciók az objektel való interakcióval a falon.
+
 Interakciók:
 
  - Szobában sétálni

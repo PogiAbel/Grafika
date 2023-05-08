@@ -4,6 +4,7 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "app.h"
 #include "particle.h"
@@ -45,7 +46,7 @@ int init_app(App* app, int width, int height){
         return 1;
     }
 
-    init_particle(app->ps,10, 3.0f, 0.35f, 0.5f);
+    init_particle(app->ps,1000, 3.0f, 0.35f, 0.5f);
 
     // Set up the projection matrix
     glMatrixMode(GL_PROJECTION);
@@ -107,14 +108,12 @@ void handle_events(App* app){
 }
 
 void destroy_app(App* app){
-    // Destroy the particle system
-    destroy_particle(app->ps);
 
     // Destroy the OpenGL context
     SDL_GL_DeleteContext(app->gl_context);
 
     // Clean up SDL2 and exit
     SDL_DestroyWindow(app->window);
-    free(app);
     SDL_Quit();
+    free(app);
 }

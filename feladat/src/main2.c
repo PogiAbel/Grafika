@@ -13,9 +13,18 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
-#define PARTICLE_LIFETIME 3.0f
-#define PARTICLE_VELOCITY_RANGE 0.5f
-#define PARTICLE_SIZE 0.35f
+float PARTICLE_LIFETIME = 3.0f;
+float PARTICLE_SIZE = 0.35f;
+float PARTICLE_VELOCITY_RANGE = 0.5f;
+
+typedef enum FireEvent {
+    FIRE_EVENT_NONE,
+    FIRE_EVENT_LIFETIME,
+    FIRE_EVENT_VELOCITY_RANGE,
+    FIRE_EVENT_SIZE
+}FireEvent;
+
+FireEvent currentEvent = FIRE_EVENT_NONE;
 
 
 typedef struct Particle {
@@ -211,6 +220,67 @@ int main(int argc, char* argv[]) {
             switch (event.type) {
             case SDL_QUIT:
                 quit = true;
+                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.scancode) {
+                case SDL_SCANCODE_ESCAPE:
+                    quit = true;
+                    break;
+                case SDL_SCANCODE_J:
+                    currentEvent = FIRE_EVENT_SIZE;
+                    printf("Current event: Size\n");
+                    break;
+                case SDL_SCANCODE_K:
+                    currentEvent = FIRE_EVENT_VELOCITY_RANGE;
+                    printf("Current event: Velocity Range\n");
+                    break;
+                case SDL_SCANCODE_L:
+                    currentEvent = FIRE_EVENT_LIFETIME;
+                    printf("Current event: Lifetime\n");
+                    break;
+                case SDL_SCANCODE_R:
+                    currentEvent = FIRE_EVENT_NONE;
+                    printf("Current event: None\n");
+                    break;
+                case SDL_SCANCODE_UP:
+                    switch (currentEvent) {
+                        case FIRE_EVENT_NONE:
+                            break;
+                        case FIRE_EVENT_SIZE:
+                            PARTICLE_SIZE += 0.1f;
+                            printf("Size: %f\n", PARTICLE_SIZE);
+                            break;
+                        case FIRE_EVENT_VELOCITY_RANGE:
+                            PARTICLE_VELOCITY_RANGE += 0.1f;
+                            printf("Velocity Range: %f\n", PARTICLE_VELOCITY_RANGE);
+                            break;
+                        case FIRE_EVENT_LIFETIME:
+                            PARTICLE_LIFETIME += 0.1f;
+                            printf("Lifetime: %f\n", PARTICLE_LIFETIME);
+                            break;
+                        default:
+                            break;}
+                    break;
+                case SDL_SCANCODE_DOWN:
+                    switch (currentEvent) {
+                    case FIRE_EVENT_NONE:
+                        break;
+                    case FIRE_EVENT_SIZE:
+                        PARTICLE_SIZE -= 0.1f;
+                        break;
+                    case FIRE_EVENT_VELOCITY_RANGE:
+                        PARTICLE_VELOCITY_RANGE -= 0.1f;
+                        break;
+                    case FIRE_EVENT_LIFETIME:
+                        PARTICLE_LIFETIME -= 0.1f;
+                        break;
+                    default:
+                        break;
+                    }
+                default:
+                    break;
+                }
+            default:
                 break;
             }
         }

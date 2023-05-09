@@ -47,6 +47,7 @@ int init_app(App* app, int width, int height){
     }
 
     init_particle(app->ps,1000, 3.0f, 0.35f, 0.5f);
+    app->event = FIRE_EVENT_NONE;
 
     // Set up the projection matrix
     glMatrixMode(GL_PROJECTION);
@@ -76,6 +77,31 @@ void render(App* app){
     SDL_GL_SwapWindow(app->window);
 }
 
+void fire_event(FireEvent* event, ParticleSystem* ps, float value){
+    switch (*event) {
+    case FIRE_EVENT_NONE:
+        break;
+    case FIRE_EVENT_PARTICLE_COUNT:
+        recount_particles(ps,ps->particle_count + (int)(value*1000));
+        printf("Particle count: %d\n", ps->particle_count);
+        break;
+    case FIRE_EVENT_LIFETIME:
+        ps->particle_lifetime += value;
+        printf("Particle lifetime: %f\n", ps->particle_lifetime);
+        break;
+    case FIRE_EVENT_SIZE:
+        ps->particle_size += value;
+        printf("Particle size: %f\n", ps->particle_size);
+        break;
+    case FIRE_EVENT_VELOCITY_RANGE:
+        ps->particle_velocity_range += value;
+        printf("Particle velocity range: %f\n", ps->particle_velocity_range);
+        break;
+    default:
+        break;
+    }
+}
+
 void handle_events(App* app){
     SDL_Event event;
     bool quit = false;
@@ -94,6 +120,24 @@ void handle_events(App* app){
                 switch (event.key.keysym.scancode) {
                 case SDL_SCANCODE_ESCAPE:
                     quit = true;
+                    break;
+                case SDL_SCANCODE_H:
+                    app->event = FIRE_EVENT_PARTICLE_COUNT;
+                    break;
+                case SDL_SCANCODE_J:
+                    app->event = FIRE_EVENT_LIFETIME;
+                    break;
+                case SDL_SCANCODE_K:
+                    app->event = FIRE_EVENT_SIZE;
+                    break;
+                case SDL_SCANCODE_L:
+                    app->event = FIRE_EVENT_VELOCITY_RANGE;
+                    break;
+                case SDL_SCANCODE_DOWN:
+                    fire_event(&app->event, app->ps, -0.1f);
+                    break;
+                case SDL_SCANCODE_UP:
+                    fire_event(&app->event, app->ps, 0.1f);
                     break;
                 default:
                     break;

@@ -26,6 +26,7 @@ typedef struct ParticleSystem
 
 typedef enum FireEvent {
     FIRE_EVENT_NONE,
+    FIRE_EVENT_PARTICLE_COUNT,
     FIRE_EVENT_LIFETIME,
     FIRE_EVENT_VELOCITY_RANGE,
     FIRE_EVENT_SIZE
@@ -33,6 +34,8 @@ typedef enum FireEvent {
 
 /* initalize particle system */
 void init_particle(ParticleSystem* ps,int particle_count, float particle_lifetime, float particle_size, float particle_velocity_range);
+
+void recount_particles(ParticleSystem* ps, int particle_count);
 
 /* update particle system */
 void update_particle(ParticleSystem* ps, float dt);

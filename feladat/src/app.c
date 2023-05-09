@@ -142,16 +142,16 @@ void handle_events(App* app){
                 app->is_running = false;;
                 break;
             case SDL_SCANCODE_W:
-                set_camera_speed(&(app->camera), 1);
+                set_camera_speed(&(app->camera), 2);
                 break;
             case SDL_SCANCODE_S:
-                set_camera_speed(&(app->camera), -1);
+                set_camera_speed(&(app->camera), -2);
                 break;
             case SDL_SCANCODE_A:
-                set_camera_side_speed(&(app->camera), 1);
+                set_camera_side_speed(&(app->camera), 2);
                 break;
             case SDL_SCANCODE_D:
-                set_camera_side_speed(&(app->camera), -1);
+                set_camera_side_speed(&(app->camera), -2);
                 break;
             case SDL_SCANCODE_H:
                 app->event = FIRE_EVENT_PARTICLE_COUNT;
@@ -170,6 +170,12 @@ void handle_events(App* app){
                 break;
             case SDL_SCANCODE_UP:
                 fire_event(&app->event, &app->ps, 0.1f);
+                break;
+            case SDL_SCANCODE_Q:
+                app->camera.position.z += 1.0f;
+                break;
+            case SDL_SCANCODE_E:
+                app->camera.position.z -= 1.0f;
                 break;
             default:
                 break;
@@ -196,6 +202,7 @@ void handle_events(App* app){
             SDL_GetMouseState(&x, &y);
             if (is_mouse_down) {
                 rotate_camera(&(app->camera), mouse_x - x, mouse_y - y);
+                printf("Camera position: x: %f y: %f z:%f\n", app->camera.rotation.x, app->camera.rotation.y, app->camera.rotation.z);
             }
             mouse_x = x;
             mouse_y = y;

@@ -36,8 +36,8 @@ void recount_particles(ParticleSystem* ps, int particle_count){
 void update_particle(ParticleSystem* ps, float dt){
     for (int i = 0; i < ps->particle_count; i++) {
         ps->particles[i].x += ps->particles[i].vx * dt;
-        ps->particles[i].y += ps->particles[i].vy * dt;
-        ps->particles[i].z += ps->particles[i].vz * dt;
+        ps->particles[i].y += ps->particles[i].vz * dt;
+        ps->particles[i].z += ps->particles[i].vy * dt;
 
         ps->particles[i].life -= dt;
 
@@ -59,6 +59,21 @@ void render_particle(ParticleSystem* ps){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, ps->texture);
+
+    // setup matrix to face camera
+    glMatrixMode(GL_MODELVIEW);
+    float modelview[16];
+    int i,j;
+    glGetFloatv(GL_MODELVIEW_MATRIX , modelview);
+    for( i=0; i<3; i++ ) {
+        for( j=0; j<3; j++ ) {
+            if ( i==j )
+                modelview[i*4+j] = 1.0;
+            else
+                modelview[i*4+j] = 0.0;
+        }
+    }
+    glLoadMatrixf(modelview);
 
     glBegin(GL_QUADS);
 

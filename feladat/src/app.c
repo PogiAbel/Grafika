@@ -8,6 +8,7 @@
 
 #include "app.h"
 #include "particle.h"
+#include "camera.h"
 
 int init_app(App* app, int width, int height){
 
@@ -46,8 +47,13 @@ int init_app(App* app, int width, int height){
         return 1;
     }
 
-    init_particle(app->ps,1000, 3.0f, 0.35f, 0.5f);
+    init_particle(&app->ps,1000, 3.0f, 0.35f, 0.5f);
     app->event = FIRE_EVENT_NONE;
+    app->is_running = true;
+
+    // init_opengl();
+
+    init_camera(&app->camera);
 
     // Set up the projection matrix
     glMatrixMode(GL_PROJECTION);
@@ -66,15 +72,30 @@ int init_app(App* app, int width, int height){
 }
 
 void render(App* app){
-    // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
 
-    // Update and render the particle system
-    update_particle(app->ps,app->elapsedTime);
-    render_particle(app->ps);
+    glPushMatrix();
+    set_view(&(app->camera));
+    render_particle(&app->ps);
+    glPopMatrix();
+
 
     // Swap the buffers
     SDL_GL_SwapWindow(app->window);
+}
+
+void update_app(App* app)
+{
+    double current_time;
+    double elapsed_time;
+
+    current_time = (double)SDL_GetTicks() / 1000;
+    elapsed_time = current_time - app->uptime;
+    app->uptime = current_time;
+
+    update_camera(&(app->camera), elapsed_time);
+    update_particle(&app->ps,elapsed_time);
 }
 
 void fire_event(FireEvent* event, ParticleSystem* ps, float value){
@@ -104,52 +125,91 @@ void fire_event(FireEvent* event, ParticleSystem* ps, float value){
 
 void handle_events(App* app){
     SDL_Event event;
-    bool quit = false;
-    Uint32 lastFrameTime = SDL_GetTicks();
+    static bool is_mouse_down = false;
+    static int mouse_x = 0;
+    static int mouse_y = 0;
+    int x;
+    int y;
 
-    while(!quit){
-        Uint32 currentFrameTime = SDL_GetTicks();
-        app->elapsedTime = (currentFrameTime - (Uint32)lastFrameTime) / 1000.0f; // Convert to seconds
-        lastFrameTime = currentFrameTime;
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-            case SDL_QUIT:
-                quit = true;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT:
+            app->is_running = false;
+            break;
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.scancode) {
+            case SDL_SCANCODE_ESCAPE:
+                app->is_running = false;;
                 break;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.scancode) {
-                case SDL_SCANCODE_ESCAPE:
-                    quit = true;
-                    break;
-                case SDL_SCANCODE_H:
-                    app->event = FIRE_EVENT_PARTICLE_COUNT;
-                    break;
-                case SDL_SCANCODE_J:
-                    app->event = FIRE_EVENT_LIFETIME;
-                    break;
-                case SDL_SCANCODE_K:
-                    app->event = FIRE_EVENT_SIZE;
-                    break;
-                case SDL_SCANCODE_L:
-                    app->event = FIRE_EVENT_VELOCITY_RANGE;
-                    break;
-                case SDL_SCANCODE_DOWN:
-                    fire_event(&app->event, app->ps, -0.1f);
-                    break;
-                case SDL_SCANCODE_UP:
-                    fire_event(&app->event, app->ps, 0.1f);
-                    break;
-                default:
-                    break;
-                }
+            case SDL_SCANCODE_W:
+                set_camera_speed(&(app->camera), 1);
+                break;
+            case SDL_SCANCODE_S:
+                set_camera_speed(&(app->camera), -1);
+                break;
+            case SDL_SCANCODE_A:
+                set_camera_side_speed(&(app->camera), 1);
+                break;
+            case SDL_SCANCODE_D:
+                set_camera_side_speed(&(app->camera), -1);
+                break;
+            case SDL_SCANCODE_H:
+                app->event = FIRE_EVENT_PARTICLE_COUNT;
+                break;
+            case SDL_SCANCODE_J:
+                app->event = FIRE_EVENT_LIFETIME;
+                break;
+            case SDL_SCANCODE_K:
+                app->event = FIRE_EVENT_SIZE;
+                break;
+            case SDL_SCANCODE_L:
+                app->event = FIRE_EVENT_VELOCITY_RANGE;
+                break;
+            case SDL_SCANCODE_DOWN:
+                fire_event(&app->event, &app->ps, -0.1f);
+                break;
+            case SDL_SCANCODE_UP:
+                fire_event(&app->event, &app->ps, 0.1f);
+                break;
             default:
                 break;
             }
+            break;
+        case SDL_KEYUP:
+            switch (event.key.keysym.scancode) {
+            case SDL_SCANCODE_W:
+            case SDL_SCANCODE_S:
+                set_camera_speed(&(app->camera), 0);
+                break;
+            case SDL_SCANCODE_A:
+            case SDL_SCANCODE_D:
+                set_camera_side_speed(&(app->camera), 0);
+                break;
+            default:
+                break;
+            }
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            is_mouse_down = true;
+            break;
+        case SDL_MOUSEMOTION:
+            SDL_GetMouseState(&x, &y);
+            if (is_mouse_down) {
+                rotate_camera(&(app->camera), mouse_x - x, mouse_y - y);
+            }
+            mouse_x = x;
+            mouse_y = y;
+            break;
+        case SDL_MOUSEBUTTONUP:
+            is_mouse_down = false;
+            break;
+        default:
+            break;
         }
-        render(app);
     }
-    
 }
+    
+
 
 void destroy_app(App* app){
 

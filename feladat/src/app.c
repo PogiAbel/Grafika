@@ -202,7 +202,6 @@ void handle_events(App* app){
             SDL_GetMouseState(&x, &y);
             if (is_mouse_down) {
                 rotate_camera(&(app->camera), mouse_x - x, mouse_y - y);
-                printf("Camera position: x: %f y: %f z:%f\n", app->camera.rotation.x, app->camera.rotation.y, app->camera.rotation.z);
             }
             mouse_x = x;
             mouse_y = y;

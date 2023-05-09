@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     SDL_RenderCopy(renderer, texture, NULL, &rect);
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(10000);
+    SDL_Delay(1000);
 
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);

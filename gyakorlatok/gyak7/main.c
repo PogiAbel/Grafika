@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     TTF_Font* font = TTF_OpenFont("./crunchy.ttf", 24);
-    SDL_Color color = { 255, 255, 255 };
+    SDL_Color color = { 255, 255, 255 ,0};
     SDL_Surface* surface = TTF_RenderText_Solid(font, "Hello, World! Today ijm going to announc my return", color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 

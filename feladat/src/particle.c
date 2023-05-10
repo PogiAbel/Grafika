@@ -21,8 +21,8 @@ void init_particle(ParticleSystem* ps,int particle_count, float particle_lifetim
         ps->particles[i].z = 0.0f;
 
         ps->particles[i].vx = ((float)rand() / RAND_MAX) * particle_velocity_range - (particle_velocity_range / 2);
-        ps->particles[i].vy = ((float)rand() / RAND_MAX) * particle_velocity_range + 0.1f;
-        ps->particles[i].vz = ((float)rand() / RAND_MAX) * particle_velocity_range - (particle_velocity_range / 2);
+        ps->particles[i].vy = ((float)rand() / RAND_MAX) * particle_velocity_range - (particle_velocity_range / 2);
+        ps->particles[i].vz = ((float)rand() / RAND_MAX) * particle_velocity_range + 0.1f;
 
         ps->particles[i].life = ((float)rand() / RAND_MAX) * particle_lifetime + particle_lifetime / 2;
     }
@@ -36,8 +36,8 @@ void recount_particles(ParticleSystem* ps, int particle_count){
 void update_particle(ParticleSystem* ps, float dt){
     for (int i = 0; i < ps->particle_count; i++) {
         ps->particles[i].x += ps->particles[i].vx * dt;
-        ps->particles[i].y += ps->particles[i].vz * dt;
-        ps->particles[i].z += ps->particles[i].vy * dt;
+        ps->particles[i].y += ps->particles[i].vy * dt;
+        ps->particles[i].z += ps->particles[i].vz * dt;
 
         ps->particles[i].life -= dt;
 
@@ -46,8 +46,8 @@ void update_particle(ParticleSystem* ps, float dt){
             ps->particles[i].y = 0.0f;
             ps->particles[i].z = 0.0f;
         ps->particles[i].vx = ((float)rand() / RAND_MAX) * ps->particle_velocity_range - (ps->particle_velocity_range / 2);
-        ps->particles[i].vy = ((float)rand() / RAND_MAX) * ps->particle_velocity_range + 0.1f;
-        ps->particles[i].vz = ((float)rand() / RAND_MAX) * ps->particle_velocity_range - (ps->particle_velocity_range / 2);
+        ps->particles[i].vy = ((float)rand() / RAND_MAX) * ps->particle_velocity_range - (ps->particle_velocity_range / 2);
+        ps->particles[i].vz = ((float)rand() / RAND_MAX) * ps->particle_velocity_range + 0.1f;
 
         ps->particles[i].life = ((float)rand() / RAND_MAX) * ps->particle_lifetime + ps->particle_lifetime / 2;
         }

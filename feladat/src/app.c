@@ -1,18 +1,9 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <GL/glew.h>
-#include <GL/glu.h>
-#include <GL/gl.h>
-#include <stdbool.h>
-#include <stdio.h>
-
 #include "app.h"
-#include "particle.h"
-#include "camera.h"
+
 
 int init_app(App* app, int width, int height){
 
-     // Initialize SDL2
+    // Initialize SDL2
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
     fprintf(stderr, "Failed to initialize SDL2: %s\n", SDL_GetError());
     }
@@ -47,12 +38,24 @@ int init_app(App* app, int width, int height){
         return 1;
     }
 
+    // Create a renderer
+    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    // Initialize ttf
+    if (TTF_Init() < 0) {
+        printf("TTF_Init: %s\n", TTF_GetError());
+    }
+
+    // Set up particle system
     init_particle(&app->ps,1000, 3.0f, 0.35f, 0.5f);
+
+    init_scene(&app->scene);
+
+    // Set up parameters
     app->event = FIRE_EVENT_NONE;
     app->is_running = true;
 
-    // init_opengl();
-
+    // Set up camera
     init_camera(&app->camera);
 
     // Set up the projection matrix
@@ -76,9 +79,12 @@ void render(App* app){
     glMatrixMode(GL_MODELVIEW);
 
     glPushMatrix();
+    // render_text("Press ESC to exit");
     set_view(&(app->camera));
+    render_scene(&app->scene);
     render_particle(&app->ps);
     glPopMatrix();
+    set_lighting();
 
 
     // Swap the buffers
@@ -165,6 +171,9 @@ void handle_events(App* app){
             case SDL_SCANCODE_L:
                 app->event = FIRE_EVENT_VELOCITY_RANGE;
                 break;
+            case SDL_SCANCODE_T:
+                // render_text(app->renderer,app->font, "Hello World!", 0, 0);
+                break;
             case SDL_SCANCODE_DOWN:
                 fire_event(&app->event, &app->ps, -0.1f);
                 break;
@@ -223,7 +232,10 @@ void destroy_app(App* app){
     SDL_GL_DeleteContext(app->gl_context);
 
     // Clean up SDL2 and exit
+    SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->window);
+
+    TTF_Quit();
     SDL_Quit();
     free(app);
 }

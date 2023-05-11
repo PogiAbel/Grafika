@@ -6,9 +6,9 @@
 
 void init_camera(Camera* camera)
 {
-    camera->position.x = -3.0;
-    camera->position.y = 1.0;
-    camera->position.z = 1.5;
+    camera->position.x = -1.65;
+    camera->position.y = -6.5;
+    camera->position.z = -1.0;
     camera->rotation.x = 0.0;
     camera->rotation.y = 0.0;
     camera->rotation.z = 0.0;

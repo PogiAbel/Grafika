@@ -79,6 +79,13 @@ void init_model(Model* model);
  */
 void allocate_model(Model* model);
 
+void rotate_model(Model* model, double angle);
+
+void translate_model(Model* model, double x, double y, double z);
+
+
+void assimp_load();
+
 /**
  * Release the allocated memory of the model.
  */

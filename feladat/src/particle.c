@@ -6,6 +6,11 @@
 
 #include "particle.h"
 #include "texture.h"
+#include "camera.h"
+
+static float START_X = 0.6f;
+static float START_Y = -2.5f;
+static float  START_Z = -2.0f;
 
 void init_particle(ParticleSystem* ps,int particle_count, float particle_lifetime, float particle_size, float particle_velocity_range){
     ps->texture = loadTexture("./assets/textures/fire_particle.png");
@@ -16,9 +21,9 @@ void init_particle(ParticleSystem* ps,int particle_count, float particle_lifetim
     ps->particle_count = particle_count;
 
     for (int i = 0; i < particle_count; i++) {
-        ps->particles[i].x = 0.0f;
-        ps->particles[i].y = 0.0f;
-        ps->particles[i].z = 0.0f;
+        ps->particles[i].x = START_X;
+        ps->particles[i].y = START_Y;
+        ps->particles[i].z = START_Z;
 
         ps->particles[i].vx = ((float)rand() / RAND_MAX) * particle_velocity_range - (particle_velocity_range / 2);
         ps->particles[i].vy = ((float)rand() / RAND_MAX) * particle_velocity_range - (particle_velocity_range / 2);
@@ -42,9 +47,9 @@ void update_particle(ParticleSystem* ps, float dt){
         ps->particles[i].life -= dt;
 
         if (ps->particles[i].life <= 0.0f) {
-            ps->particles[i].x = 0.0f;
-            ps->particles[i].y = 0.0f;
-            ps->particles[i].z = 0.0f;
+            ps->particles[i].x = START_X;
+            ps->particles[i].y = START_Y;
+            ps->particles[i].z = START_Z;
         ps->particles[i].vx = ((float)rand() / RAND_MAX) * ps->particle_velocity_range - (ps->particle_velocity_range / 2);
         ps->particles[i].vy = ((float)rand() / RAND_MAX) * ps->particle_velocity_range - (ps->particle_velocity_range / 2);
         ps->particles[i].vz = ((float)rand() / RAND_MAX) * ps->particle_velocity_range + 0.1f;
@@ -54,50 +59,46 @@ void update_particle(ParticleSystem* ps, float dt){
     }
 }
 
-void render_particle(ParticleSystem* ps){
+void render_particle(ParticleSystem* ps, Camera* camera){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, ps->texture);
+    
+    // calculate rotation angel
+    float dx = camera->position.x - ps->particles[0].x;
+    float dy = camera->position.y - ps->particles[0].y;
+    float angle = atan2(dy, dx) * 180 / M_PI;
 
-    // setup matrix to face camera
-    // glMatrixMode(GL_MODELVIEW);
-    // float modelview[16];
-    // int i,j;
-    // glGetFloatv(GL_MODELVIEW_MATRIX , modelview);
-    // for( i=0; i<3; i++ ) {
-    //     for( j=0; j<3; j++ ) {
-    //         if ( i==j )
-    //             modelview[i*4+j] = 1.0;
-    //         else
-    //             modelview[i*4+j] = 0.0;
-    //     }
-    // }
-    // glLoadMatrixf(modelview);
 
+    glPushMatrix();
+    glTranslatef(START_X, START_Y, START_Z);
+    glRotatef(angle, 0.0f, 0.0f, 1.0f);
+    glTranslatef(-START_X, -START_Y, -START_Z);
     glBegin(GL_QUADS);
 
     for (int i = 0; i < ps->particle_count; i++) {
-        float alpha = ps->particles[i].life / ps->particle_lifetime;
 
+        float alpha = ps->particles[i].life / ps->particle_lifetime;
         glColor4f(1.0f, 1.0f, 1.0f, alpha);
 
         float size = ps->particle_size * alpha;
 
         glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(ps->particles[i].x - size, ps->particles[i].y - size, ps->particles[i].z);
+        glVertex3f(ps->particles[i].x, ps->particles[i].y - size, ps->particles[i].z - size);
 
         glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(ps->particles[i].x + size, ps->particles[i].y - size, ps->particles[i].z);
+        glVertex3f(ps->particles[i].x, ps->particles[i].y - size, ps->particles[i].z + size);
 
         glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(ps->particles[i].x + size, ps->particles[i].y + size, ps->particles[i].z);
+        glVertex3f(ps->particles[i].x, ps->particles[i].y + size, ps->particles[i].z + size);
 
         glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(ps->particles[i].x - size, ps->particles[i].y + size, ps->particles[i].z);
-    }
+        glVertex3f(ps->particles[i].x, ps->particles[i].y + size, ps->particles[i].z - size);
 
+    }
     glEnd();
+    glPopMatrix();
 
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);

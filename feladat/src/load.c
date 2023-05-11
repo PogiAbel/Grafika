@@ -15,11 +15,8 @@ int load_model(Model* model, const char* filename)
         printf("ERROR: Unable to open '%s' file!\n", filename);
         return FALSE;
     }
-    printf("Count the elements ...\n");
     count_elements(model, obj_file);
-    printf("Allocate memory for model ...\n");
     allocate_model(model);
-    printf("Read model data ...\n");
     fseek(obj_file, 0, SEEK_SET);
     success = read_elements(model, obj_file);
     if (success == FALSE) {

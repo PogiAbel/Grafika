@@ -1,28 +1,12 @@
 #include "scene.h"
-#define PI 3.14159265358979323846
-
-void rotate_model_x(Model* model, float angle)
-{
-    float radian = angle * (PI / 180.0f);
-    float cosine = cosf(radian);
-    float sine = sinf(radian);
-
-    for (int i = 1; i <= model->n_vertices; i++) {
-        float x = model->vertices[i].x;
-        float y = model->vertices[i].y;
-        float z = model->vertices[i].z;
-
-        model->vertices[i].x = x;
-        model->vertices[i].y = y * cosine - z * sine;
-        model->vertices[i].z = y * sine + z * cosine;
-    }
-}
+#include "utils.h"
 
 void init_scene(Scene* scene){
     load_model(&scene->model,"./assets/models/scene.obj");
-    rotate_model_x(&scene->model, 90.0f);
+    rotate_model(&scene->model, 90.0f);
+    scale_model(&scene->model, 10.0f,10.0f,10.0f);
 
-    scene->material.ambient.red = 0.0;
+    scene->material.ambient.red = 1.0;
     scene->material.ambient.green = 1.0;
     scene->material.ambient.blue = 0.0;
 
@@ -34,15 +18,15 @@ void init_scene(Scene* scene){
     scene->material.specular.green = 0.0;
     scene->material.specular.blue = 1.0;
 
-    scene->material.shininess = 0.0;
+    scene->material.shininess = 0.4;
 }
 
 void set_lighting()
 {
-    float ambient_light[] = { 0.0f, 5.0f, 0.0f, 1.0f };
-    float diffuse_light[] = { 5.0f, 5.0f, 5.0f, 1.0f };
+    float ambient_light[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+    float diffuse_light[] = { 0.0f, 1.0f, 0.0f, 1.0f };
     float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    float position[] = { -5.0f, 0.0f, 5.0f, 1.0f };
+    float position[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);

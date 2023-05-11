@@ -6,6 +6,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include "camera.h"
+
 typedef struct Particle
 {
     float x, y, z;      // Position
@@ -41,7 +43,7 @@ void recount_particles(ParticleSystem* ps, int particle_count);
 void update_particle(ParticleSystem* ps, float dt);
 
 /* render particle system */
-void render_particle(ParticleSystem* ps);
+void render_particle(ParticleSystem* ps,Camera* camera);
 
 /* destroy particle system */
 void destroy_particle(ParticleSystem* ps);

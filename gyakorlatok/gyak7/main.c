@@ -1,5 +1,28 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <stdio.h>
+#include <assimp/types.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/cimport.h>
+
+void assimp_load(){
+    aiLogStream stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT, NULL);
+    aiAttachLogStream(&stream);
+    aiSetLogLevel(AI_LOG_INFO);
+
+    // Load a model
+    const char* filename = "./assets/models/land.obj";
+    const aiScene* scene = aiImportFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+    if (!scene) {
+        printf("Failed to load model: %s\n", aiGetErrorString());
+    }
+    printf("Loaded model: %s\n", filename);
+    // Cleanup
+    aiReleaseImport(scene);
+    aiDetachAllLogStreams();
+}
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -16,6 +39,8 @@ int main(int argc, char* argv[]) {
     SDL_Rect rect = { 0, 0, surface->w, surface->h };
     SDL_RenderCopy(renderer, texture, NULL, &rect);
     SDL_RenderPresent(renderer);
+
+    assimp_load();
 
     SDL_Delay(1000);
 

@@ -55,8 +55,6 @@ int init_app(App* app, int width, int height){
     app->event = FIRE_EVENT_NONE;
     app->is_running = true;
 
-    // Set up camera
-    init_camera(&app->camera);
 
     // Set up the projection matrix
     glMatrixMode(GL_PROJECTION);
@@ -70,6 +68,9 @@ int init_app(App* app, int width, int height){
 
     // Set up the viewport
     glViewport(0, 0, width, height);
+    // Set up camera
+
+    init_camera(&app->camera);
 
     return 0;
 }
@@ -79,12 +80,17 @@ void render(App* app){
     glMatrixMode(GL_MODELVIEW);
 
     glPushMatrix();
+    set_material(&app->scene.material);
     // render_text("Press ESC to exit");
+    set_lighting();
     set_view(&(app->camera));
     render_scene(&app->scene);
-    render_particle(&app->ps);
+    render_particle(&app->ps,&app->camera);
     glPopMatrix();
-    set_lighting();
+
+    if (app->camera.is_preview_visible) {
+        show_texture_preview();
+    }
 
 
     // Swap the buffers
@@ -109,18 +115,30 @@ void fire_event(FireEvent* event, ParticleSystem* ps, float value){
     case FIRE_EVENT_NONE:
         break;
     case FIRE_EVENT_PARTICLE_COUNT:
+        if(ps->particle_count+value <= 0){
+            break;
+        }
         recount_particles(ps,ps->particle_count + (int)(value*1000));
         printf("Particle count: %d\n", ps->particle_count);
         break;
     case FIRE_EVENT_LIFETIME:
+        if( ps->particle_lifetime+value <= 0){
+            break;
+        }
         ps->particle_lifetime += value;
         printf("Particle lifetime: %f\n", ps->particle_lifetime);
         break;
     case FIRE_EVENT_SIZE:
+        if(ps->particle_size+value <= 0){
+            break;
+        }
         ps->particle_size += value;
         printf("Particle size: %f\n", ps->particle_size);
         break;
     case FIRE_EVENT_VELOCITY_RANGE:
+        if(ps->particle_velocity_range+value <= 0){
+            break;
+        }
         ps->particle_velocity_range += value;
         printf("Particle velocity range: %f\n", ps->particle_velocity_range);
         break;
@@ -195,9 +213,11 @@ void handle_events(App* app){
             case SDL_SCANCODE_W:
             case SDL_SCANCODE_S:
                 set_camera_speed(&(app->camera), 0);
+                // printf("Camera posittion: x: %f, y: %f, z: %f\n", app->camera.position.x, app->camera.position.y, app->camera.position.z);
                 break;
             case SDL_SCANCODE_A:
             case SDL_SCANCODE_D:
+                // printf("Camera posittion: x: %f, y: %f, z: %f\n", app->camera.position.x, app->camera.position.y, app->camera.position.z);
                 set_camera_side_speed(&(app->camera), 0);
                 break;
             default:

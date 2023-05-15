@@ -3,9 +3,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <assimp/cimport.h>
 
 void init_model(Model* model)
 {
@@ -81,23 +78,4 @@ void scale_model(Model* model, double sx, double sy, double sz)
         model->vertices[i].y *= sy;
         model->vertices[i].z *= sz;
     }
-}
-
-
-void assimp_load(){
-    // aiLogStream stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT, NULL);
-    // aiAttachLogStream(&stream);
-    // aiSetLogLevel(AI_LOG_INFO);
-
-    // // Load a model
-    // const char* filename = "./assets/models/land.obj";
-    // const aiScene* scene = aiImportFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
-
-    // if (!scene) {
-    //     printf("Failed to load model: %s\n", aiGetErrorString());
-    // }
-
-    // // Cleanup
-    // aiReleaseImport(scene);
-    // aiDetachAllLogStreams();
 }

@@ -4,7 +4,7 @@
 #include <GL/gl.h>
 #include <stdio.h>
 
-GLuint loadTexture(const char* filename) {
+GLuint load_texture(const char* filename) {
     // SDL_Surface* surface = SDL_LoadBMP(filename);
     SDL_Surface* surface = IMG_Load(filename);
 

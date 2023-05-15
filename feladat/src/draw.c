@@ -1,10 +1,42 @@
 #include "obj/draw.h"
+#include "texture.h"
 
 #include <GL/gl.h>
 
 void draw_model(const Model* model)
 {
     draw_triangles(model);
+}
+
+void draw_model_texture(const Model* model, const char* texture_filename)
+{
+    GLuint texture_id;
+
+    texture_id = load_texture(texture_filename);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    GLfloat tex_coords[] = {
+    0.0, 0.0,
+    1.0, 0.0,
+    1.0, 1.0,
+    0.0, 1.0,
+    };
+
+    // Enable vertex array and texture coordinate array
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    // Specify the vertex and texture coordinate data for the object's geometry
+    glVertexPointer(3, GL_FLOAT, 0, model->vertices);
+    glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
+
+    draw_triangles(model);
+
+    // Disable vertex array and texture coordinate array
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisable(GL_TEXTURE_2D);
 }
 
 void draw_triangles(const Model* model)

@@ -47,8 +47,9 @@ int init_app(App* app, int width, int height){
     }
 
     // Set up particle system
-    init_particle(&app->ps,1000, 3.0f, 0.35f, 0.5f);
+    init_particle(&app->ps,200, 3.0f, 0.15f, 0.6f);
 
+    init_opengl();
     init_scene(&app->scene);
 
     // Set up parameters
@@ -71,8 +72,29 @@ int init_app(App* app, int width, int height){
     // Set up camera
 
     init_camera(&app->camera);
+    gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     return 0;
+}
+
+void init_opengl()
+{
+    glShadeModel(GL_SMOOTH);
+
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_AUTO_NORMAL);
+
+    glClearColor(0.1, 0.1, 0.1, 1.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glEnable(GL_DEPTH_TEST);
+
+    glClearDepth(1.0);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 }
 
 void render(App* app){
@@ -80,18 +102,16 @@ void render(App* app){
     glMatrixMode(GL_MODELVIEW);
 
     glPushMatrix();
-    set_material(&app->scene.material);
-    // render_text("Press ESC to exit");
-    set_lighting();
     set_view(&(app->camera));
-    render_scene(&app->scene);
+    set_lighting();
     render_particle(&app->ps,&app->camera);
+    // render_text("Press ESC to exit");
+    render_scene(&app->scene);
     glPopMatrix();
 
     if (app->camera.is_preview_visible) {
         show_texture_preview();
     }
-
 
     // Swap the buffers
     SDL_GL_SwapWindow(app->window);
@@ -203,6 +223,22 @@ void handle_events(App* app){
                 break;
             case SDL_SCANCODE_E:
                 app->camera.position.z -= 1.0f;
+                break;
+            case SDL_SCANCODE_F:
+                app->ps.start[0] += 0.1f;
+                printf("x:%f, y%f\n", app->ps.start[0], app->ps.start[1]);
+                break;
+            case SDL_SCANCODE_C:
+                app->ps.start[1] += 0.1f;
+                printf("x:%f, y%f\n", app->ps.start[0], app->ps.start[1]);
+                break;
+            case SDL_SCANCODE_V:
+                app->ps.start[0] -= 0.1f;
+                printf("x:%f, y%f\n", app->ps.start[0], app->ps.start[1]);
+                break;
+            case SDL_SCANCODE_B:
+                app->ps.start[1] -= 0.1f;
+                printf("x:%f, y%f\n", app->ps.start[0], app->ps.start[1]);
                 break;
             default:
                 break;

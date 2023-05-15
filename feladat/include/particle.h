@@ -22,6 +22,7 @@ typedef struct ParticleSystem
     float particle_size;
     float particle_velocity_range;
     int particle_count;
+    float start[3];
     GLuint texture;
 }ParticleSystem;
 
@@ -44,6 +45,8 @@ void update_particle(ParticleSystem* ps, float dt);
 
 /* render particle system */
 void render_particle(ParticleSystem* ps,Camera* camera);
+
+void set_fire_material();
 
 /* destroy particle system */
 void destroy_particle(ParticleSystem* ps);

@@ -9,21 +9,24 @@
 #include "camera.h"
 
 static float START_X = 0.6f;
-static float START_Y = -2.5f;
+static float START_Y = -3.2f;
 static float  START_Z = -2.0f;
 
 void init_particle(ParticleSystem* ps,int particle_count, float particle_lifetime, float particle_size, float particle_velocity_range){
-    ps->texture = loadTexture("./assets/textures/fire_particle.png");
+    ps->texture = load_texture("./assets/textures/fire_particle.png");
     ps->particles = malloc(particle_count * sizeof(Particle));
     ps->particle_lifetime = particle_lifetime;
     ps->particle_size = particle_size;
     ps->particle_velocity_range = particle_velocity_range;
     ps->particle_count = particle_count;
+    ps->start[0] = START_X;
+    ps->start[1] = START_Y;
+    ps->start[2] = START_Z;
 
     for (int i = 0; i < particle_count; i++) {
-        ps->particles[i].x = START_X;
-        ps->particles[i].y = START_Y;
-        ps->particles[i].z = START_Z;
+        ps->particles[i].x = ps->start[0];
+        ps->particles[i].y = ps->start[1];
+        ps->particles[i].z = ps->start[2];
 
         ps->particles[i].vx = ((float)rand() / RAND_MAX) * particle_velocity_range - (particle_velocity_range / 2);
         ps->particles[i].vy = ((float)rand() / RAND_MAX) * particle_velocity_range - (particle_velocity_range / 2);
@@ -47,14 +50,16 @@ void update_particle(ParticleSystem* ps, float dt){
         ps->particles[i].life -= dt;
 
         if (ps->particles[i].life <= 0.0f) {
-            ps->particles[i].x = START_X;
-            ps->particles[i].y = START_Y;
-            ps->particles[i].z = START_Z;
-        ps->particles[i].vx = ((float)rand() / RAND_MAX) * ps->particle_velocity_range - (ps->particle_velocity_range / 2);
-        ps->particles[i].vy = ((float)rand() / RAND_MAX) * ps->particle_velocity_range - (ps->particle_velocity_range / 2);
-        ps->particles[i].vz = ((float)rand() / RAND_MAX) * ps->particle_velocity_range + 0.1f;
+            ps->particles[i].x = ps->start[0];
+            ps->particles[i].y = ps->start[1];
+            ps->particles[i].z = ps->start[2];
 
-        ps->particles[i].life = ((float)rand() / RAND_MAX) * ps->particle_lifetime + ps->particle_lifetime / 2;
+            ps->particles[i].vx = ((float)rand() / RAND_MAX) * ps->particle_velocity_range - (ps->particle_velocity_range / 2);
+            ps->particles[i].vy = ((float)rand() / RAND_MAX) * ps->particle_velocity_range - (ps->particle_velocity_range / 2);
+            ps->particles[i].vz = ((float)rand() / RAND_MAX) * ps->particle_velocity_range + 0.1f;
+
+
+            ps->particles[i].life = ((float)rand() / RAND_MAX) * ps->particle_lifetime + ps->particle_lifetime / 2;
         }
     }
 }
@@ -62,7 +67,14 @@ void update_particle(ParticleSystem* ps, float dt){
 void render_particle(ParticleSystem* ps, Camera* camera){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.2f);
+
+    set_fire_material();
+
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_DEPTH_TEST);
     glBindTexture(GL_TEXTURE_2D, ps->texture);
     
     // calculate rotation angel
@@ -70,13 +82,11 @@ void render_particle(ParticleSystem* ps, Camera* camera){
     float dy = camera->position.y - ps->particles[0].y;
     float angle = atan2(dy, dx) * 180 / M_PI;
 
-
     glPushMatrix();
-    glTranslatef(START_X, START_Y, START_Z);
-    glRotatef(angle, 0.0f, 0.0f, 1.0f);
-    glTranslatef(-START_X, -START_Y, -START_Z);
+    glTranslatef(ps->start[0], ps->start[1], ps->start[2]);
+    glRotatef( angle, 0.0f, 0.0f, 1.0f);
+    glTranslatef(-ps->start[0], -ps->start[1], -ps->start[2]);
     glBegin(GL_QUADS);
-
     for (int i = 0; i < ps->particle_count; i++) {
 
         float alpha = ps->particles[i].life / ps->particle_lifetime;
@@ -100,8 +110,25 @@ void render_particle(ParticleSystem* ps, Camera* camera){
     glEnd();
     glPopMatrix();
 
+    glDisable(GL_ALPHA_TEST);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
+}
+
+void set_fire_material()
+{
+    GLfloat brightness = 0.8f;
+    float ambient_material_color[] = { 0.8f,0.6f,0.6f,1.0f };
+
+    float diffuse_material_color[] = { 0.8f,0.5f,0.5f,1.0f };
+
+    float specular_material_color[] = { 0.8f,0.0f,0.0f,0.0f };
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_material_color);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_material_color);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular_material_color);
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &brightness);
 }
 
 void destroy_particle(ParticleSystem* ps){

@@ -2,28 +2,33 @@
 #include "utils.h"
 
 void init_scene(Scene* scene){
-    load_model(&scene->model,"./assets/models/scene.obj");
-    rotate_model(&scene->model, 90.0f);
-    scale_model(&scene->model, 10.0f,10.0f,10.0f);
+    load_model(&scene->model[0],"./assets/models/land.obj");
+    load_model(&scene->model[1],"./assets/models/pit.obj");
+    rotate_model(&scene->model[0], 90.0f);
+    scale_model(&scene->model[0], 10.0f,10.0f,10.0f);
+    translate_model(&scene->model[0], 0.0f, 0.0f, -3.0f);
+    rotate_model(&scene->model[1], 90.0f);
+    scale_model(&scene->model[1], 2.0f,2.0f,2.0f);
+    translate_model(&scene->model[1], 0.6f, -2.5f, -2.0f);
 
     scene->material.ambient.red = 1.0;
     scene->material.ambient.green = 1.0;
-    scene->material.ambient.blue = 0.0;
+    scene->material.ambient.blue = 1.0;
 
-    scene->material.diffuse.red = 1.0;
-    scene->material.diffuse.green = 1.0;
-    scene->material.diffuse.blue = 1.0;
+    scene->material.diffuse.red = 0.7;
+    scene->material.diffuse.green = 0.7;
+    scene->material.diffuse.blue = 0.7;
 
     scene->material.specular.red = 0.0;
     scene->material.specular.green = 0.0;
-    scene->material.specular.blue = 1.0;
+    scene->material.specular.blue = 0.0;
 
     scene->material.shininess = 0.4;
 }
 
 void set_lighting()
 {
-    float ambient_light[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+    float ambient_light[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     float diffuse_light[] = { 0.0f, 1.0f, 0.0f, 1.0f };
     float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     float position[] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -69,6 +74,7 @@ void update_scene(Scene* scene)
 void render_scene(Scene* scene)
 {
     set_material(&(scene->material));
-    set_lighting();
-    draw_model(&(scene->model));
+    // draw_model(&(scene->model[1]));
+    draw_model_texture(&scene->model[0],"./assets/textures/land.png");
+    draw_model_texture(&scene->model[1],"./assets/textures/pit.png");
 }

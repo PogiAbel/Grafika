@@ -6,6 +6,6 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
-GLuint loadTexture(const char *filename);
+GLuint load_texture(const char *filename);
 
 #endif /* TEXTURE_H */

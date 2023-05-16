@@ -284,6 +284,7 @@ void handle_events(App* app){
 
 void destroy_app(App* app){
 
+    // glDeleteProgram(app->scene.shader_program);
     // Destroy the OpenGL context
     SDL_GL_DeleteContext(app->gl_context);
 

@@ -5,7 +5,10 @@ void init_scene(Scene* scene){
     // init_cubemap_texture(&scene->skybox_texture_id);
     load_model(&scene->model[0],"./assets/models/land.obj");
     load_model(&scene->model[1],"./assets/models/pit.obj");
-    load_model(&scene->model[2],"./assets/models/tree1.obj");
+    load_model(&scene->model[2],"./assets/models/top.obj");
+    load_model(&scene->model[3],"./assets/models/trunk.obj");
+    load_model(&scene->model[4],"./assets/models/top.obj");
+    load_model(&scene->model[5],"./assets/models/trunk.obj");
     // load_model(&scene->model[3],"./assets/models/sky.obj");
     rotate_model(&scene->model[0], 90.0f);
     scale_model(&scene->model[0], 10.0f,10.0f,10.0f);
@@ -13,6 +16,20 @@ void init_scene(Scene* scene){
     rotate_model(&scene->model[1], 90.0f);
     scale_model(&scene->model[1], 2.0f,2.0f,2.0f);
     translate_model(&scene->model[1], 0.6f, -2.5f, -2.0f);
+    rotate_model(&scene->model[2], 90.0f);
+    scale_model(&scene->model[2], 10.0f,10.0f,10.0f);
+    translate_model(&scene->model[2], 1.5f, -4.5f, -1.5f);
+    rotate_model(&scene->model[3], 90.0f);
+    scale_model(&scene->model[3], 10.0f,10.0f,10.0f);
+    translate_model(&scene->model[3], 1.5f, -4.5f, -1.5f);
+    rotate_model(&scene->model[4], 90.0f);
+    rotate_model_z(&scene->model[4], 90.0f);
+    scale_model(&scene->model[4], 10.0f,10.0f,10.0f);
+    translate_model(&scene->model[4], -1.0f, -1.0f, -1.5f);
+    rotate_model(&scene->model[5], 90.0f);
+    rotate_model_z(&scene->model[5], 90.0f);
+    scale_model(&scene->model[5], 10.0f,10.0f,10.0f);
+    translate_model(&scene->model[5], -1.0f, -1.0f, -1.5f);
 
     scene->material.ambient.red = 1.0;
     scene->material.ambient.green = 1.0;
@@ -120,7 +137,10 @@ void render_scene(Scene* scene)
 {
     // render_skybox(&scene->skybox_texture_id, scene->shader_program);
     set_material(&(scene->material));
-    draw_model(&(scene->model[2]));
     draw_model_texture(&scene->model[0],"./assets/textures/land.png");
     draw_model_texture(&scene->model[1],"./assets/textures/pit.png");
+    draw_model_texture(&scene->model[2],"./assets/textures/top.png");
+    draw_model_texture(&scene->model[3],"./assets/textures/trunk.png");
+    draw_model_texture(&scene->model[4],"./assets/textures/top.png");
+    draw_model_texture(&scene->model[5],"./assets/textures/trunk.png");
 }

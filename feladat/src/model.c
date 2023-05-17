@@ -44,6 +44,22 @@ void rotate_model(Model* model, double angle){
     }
 }
 
+rotate_model_z(Model* model,double angle){
+    float radian = angle * (M_PI / 180.0f);
+    float cosine = cosf(radian);
+    float sine = sinf(radian);
+
+    for (int i = 1; i <= model->n_vertices; i++) {
+        float x = model->vertices[i].x;
+        float y = model->vertices[i].y;
+        float z = model->vertices[i].z;
+
+        model->vertices[i].x = x * cosine - y * sine;
+        model->vertices[i].y = x * sine + y * cosine;
+        model->vertices[i].z = z;
+    }
+}
+
 void translate_model(Model* model, double x, double y, double z){
     for (int i = 1; i <= model->n_vertices; i++) {
         model->vertices[i].x += x;

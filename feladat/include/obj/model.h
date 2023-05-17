@@ -81,6 +81,8 @@ void allocate_model(Model* model);
 
 void rotate_model(Model* model, double angle);
 
+void rotate_model_z(Model* model, double angle);
+
 void translate_model(Model* model, double x, double y, double z);
 
 

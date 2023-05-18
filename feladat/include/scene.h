@@ -4,6 +4,7 @@
 #include "obj/model.h"
 #include "obj/load.h"
 #include "obj/draw.h"
+#include "texture.h"
 #include "utils.h"
 #include <SDL2/SDL.h>
 #include <GL/gl.h>

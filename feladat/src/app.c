@@ -109,10 +109,6 @@ void render(App* app){
     render_scene(&app->scene);
     glPopMatrix();
 
-    if (app->camera.is_preview_visible) {
-        show_texture_preview();
-    }
-
     // Swap the buffers
     SDL_GL_SwapWindow(app->window);
 }

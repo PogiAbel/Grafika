@@ -9,7 +9,7 @@ void init_scene(Scene* scene){
     load_model(&scene->model[3],"./assets/models/trunk.obj");
     load_model(&scene->model[4],"./assets/models/top.obj");
     load_model(&scene->model[5],"./assets/models/trunk.obj");
-    load_model(&scene->skybox_model,"./assets/models/sky3.obj");
+    load_model(&scene->skybox_model,"./assets/models/sky.obj");
 
     // load textures
     scene->texture_id[0] = load_texture("./assets/textures/land.png");

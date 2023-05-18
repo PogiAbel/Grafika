@@ -65,14 +65,11 @@ int init_app(App* app, int width, int height){
     // Set up the modelview matrix
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     // Set up the viewport
     glViewport(0, 0, width, height);
     // Set up camera
-
     init_camera(&app->camera);
-    gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     return 0;
 }
@@ -105,7 +102,6 @@ void render(App* app){
     set_view(&(app->camera));
     set_lighting();
     render_particle(&app->ps,&app->camera);
-    // render_text("Press ESC to exit");
     render_scene(&app->scene);
     glPopMatrix();
 

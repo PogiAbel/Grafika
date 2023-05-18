@@ -8,11 +8,8 @@ void draw_model(const Model* model)
     draw_triangles(model);
 }
 
-void draw_model_texture(const Model* model, const char* texture_filename)
+void draw_model_texture(const Model* model, GLuint texture_id)
 {
-    GLuint texture_id;
-
-    texture_id = load_texture(texture_filename);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture_id);
 
@@ -70,4 +67,81 @@ void draw_triangles(const Model* model)
     }
 
     glEnd();
+}
+
+void draw_skybox()
+{
+    GLuint texture_id;
+
+    texture_id = load_texture("./assets/textures/night.png");
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    float scale = 15.0f;
+
+
+    glBegin(GL_QUADS);
+
+    // Right face
+    glTexCoord2f(0.5f, 0.666f);
+    glVertex3f(scale, -scale, -scale);
+    glTexCoord2f(0.75f, 0.666f);
+    glVertex3f(scale, -scale, scale);
+    glTexCoord2f(0.75f, 0.333f);
+    glVertex3f(scale, scale, scale);
+    glTexCoord2f(0.5f, 0.333f);
+    glVertex3f(scale, scale, -scale);
+    
+    // Front face
+    glTexCoord2f(0.25f, 1.0f);
+    glVertex3f(-scale, -scale, scale);
+    glTexCoord2f(0.5f, 1.0f);
+    glVertex3f(scale, -scale, scale);
+    glTexCoord2f(0.5f, 0.666f);
+    glVertex3f(scale, scale, scale);
+    glTexCoord2f(0.25f, 0.666f);
+    glVertex3f(-scale, scale, scale);
+    
+    // Back face
+    glTexCoord2f(0.25f, 0.333f);
+    glVertex3f(scale, -scale, -scale);
+    glTexCoord2f(0.5f, 0.333f);
+    glVertex3f(-scale, -scale, -scale);
+    glTexCoord2f(0.5f, 0.0);
+    glVertex3f(-scale, scale, -scale);
+    glTexCoord2f(0.25f, 0.0);
+    glVertex3f(scale, scale, -scale);
+    
+    // Left face
+    glTexCoord2f(0.0f, 0.666f);
+    glVertex3f(-scale, -scale, -scale);
+    glTexCoord2f(0.25f, 0.666f);
+    glVertex3f(-scale, -scale, scale);
+    glTexCoord2f(0.25f, 0.333f);
+    glVertex3f(-scale, scale, scale);
+    glTexCoord2f(0.0f, 0.333f);
+    glVertex3f(-scale, scale, -scale);
+    
+    // Bottom face
+    glTexCoord2f(0.75f, 0.666f);
+    glVertex3f(-scale, -scale, scale);
+    glTexCoord2f(1.0f, 0.666f);
+    glVertex3f(scale, -scale, scale);
+    glTexCoord2f(1.0f, 0.333f);
+    glVertex3f(scale, -scale, -scale);
+    glTexCoord2f(0.75f, 0.333f);
+    glVertex3f(-scale, -scale, -scale);
+    
+    // Top face
+    glTexCoord2f(0.25f, 0.666f);
+    glVertex3f(-scale, scale, -scale);
+    glTexCoord2f(0.5f, 0.666f);
+    glVertex3f(scale, scale, -scale);
+    glTexCoord2f(0.5f, 0.333f);
+    glVertex3f(scale, scale, scale);
+    glTexCoord2f(0.25f, 0.333f);
+    glVertex3f(-scale, scale, scale);
+
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
 }

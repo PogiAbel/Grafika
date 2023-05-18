@@ -4,7 +4,7 @@
 void render_text(const char* text){
     TTF_Font* font = TTF_OpenFont("./assets/fonts/crunchy.ttf", 24);
     SDL_Color color = {104, 255, 255, 255};
-    SDL_Surface* surface = TTF_RenderText_Blended(font, "Hello, world!", color);
+    SDL_Surface* surface = TTF_RenderText_Blended(font, text, color);
     if (!surface) {
         fprintf(stderr, "Error creating surface: %s\n", SDL_GetError());
         return;

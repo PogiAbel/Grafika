@@ -88,6 +88,8 @@ void translate_model(Model* model, double x, double y, double z);
 
 void assimp_load();
 
+void scale_model(Model* model, double sx, double sy, double sz);
+
 /**
  * Release the allocated memory of the model.
  */

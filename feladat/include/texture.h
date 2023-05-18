@@ -8,4 +8,6 @@
 
 GLuint load_texture(const char *filename);
 
+GLuint load_texture_jpg(const char* filename);
+
 #endif /* TEXTURE_H */

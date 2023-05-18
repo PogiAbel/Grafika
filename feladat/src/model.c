@@ -44,7 +44,7 @@ void rotate_model(Model* model, double angle){
     }
 }
 
-rotate_model_z(Model* model,double angle){
+void rotate_model_z(Model* model,double angle){
     float radian = angle * (M_PI / 180.0f);
     float cosine = cosf(radian);
     float sine = sinf(radian);

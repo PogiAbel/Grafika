@@ -78,9 +78,9 @@ void render_particle(ParticleSystem* ps, Camera* camera){
     glBindTexture(GL_TEXTURE_2D, ps->texture);
     
     // calculate rotation angel
-    float dx = camera->position.x - ps->particles[0].x;
-    float dy = camera->position.y - ps->particles[0].y;
-    float angle = atan2(dy, dx) * 180 / M_PI;
+    float dx = camera->position.x - ps->start[0];
+    float dy = camera->position.y - ps->start[1];
+    GLfloat angle = atan2(dy, dx) * 180 / M_PI;
 
     glPushMatrix();
     glTranslatef(ps->start[0], ps->start[1], ps->start[2]);
@@ -118,11 +118,11 @@ void render_particle(ParticleSystem* ps, Camera* camera){
 void set_fire_material()
 {
     GLfloat brightness = 0.8f;
-    float ambient_material_color[] = { 0.8f,0.6f,0.6f,1.0f };
+    float ambient_material_color[] = { 0.5f,0.2f,0.2f,0.8f };
 
-    float diffuse_material_color[] = { 0.8f,0.5f,0.5f,1.0f };
+    float diffuse_material_color[] = { 0.1f,0.3f,0.3f,1.0f };
 
-    float specular_material_color[] = { 0.8f,0.0f,0.0f,0.0f };
+    float specular_material_color[] = { 0.8f,0.2f,0.2f,0.2f };
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_material_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_material_color);

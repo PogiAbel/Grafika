@@ -37,8 +37,10 @@ void init_particle(ParticleSystem* ps,int particle_count, float particle_lifetim
 }
 
 void recount_particles(ParticleSystem* ps, int particle_count){
-    ps->particles = realloc(ps->particles, particle_count * sizeof(Particle));
+    free(ps->particles);
+    ps->particles = malloc(particle_count * sizeof(Particle));
     ps->particle_count = particle_count;
+
 }
 
 void update_particle(ParticleSystem* ps, float dt){

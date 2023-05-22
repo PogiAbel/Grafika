@@ -22,6 +22,7 @@ void init_particle(ParticleSystem* ps,int particle_count, float particle_lifetim
     ps->start[0] = START_X;
     ps->start[1] = START_Y;
     ps->start[2] = START_Z;
+    ps->fire_color = FIRE_COLOR_RED;
 
     for (int i = 0; i < particle_count; i++) {
         ps->particles[i].x = ps->start[0];
@@ -73,7 +74,7 @@ void render_particle(ParticleSystem* ps, Camera* camera){
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, 0.2f);
 
-    set_fire_material();
+    set_fire_material(ps->fire_color);
 
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
@@ -117,14 +118,30 @@ void render_particle(ParticleSystem* ps, Camera* camera){
     glDisable(GL_BLEND);
 }
 
-void set_fire_material()
+void set_fire_material(FireColor fire_color)
 {
-    GLfloat brightness = 0.8f;
-    float ambient_material_color[] = { 0.5f,0.2f,0.2f,0.8f };
-
-    float diffuse_material_color[] = { 0.1f,0.3f,0.3f,1.0f };
-
-    float specular_material_color[] = { 0.8f,0.2f,0.2f,0.2f };
+    GLfloat brightness = 20.0f;
+    float ambient_material_color[] = { 0.0f,0.0f,0.0f,1.0f };
+    float r = 1.0f;
+    float g = 1.0f;
+    float b = 1.0f;
+    switch (fire_color)
+    {
+    case FIRE_COLOR_RED:
+        r = 5.0f;
+        break;
+    case FIRE_COLOR_GREEN:
+        g = 5.0f;
+        break;
+    case FIRE_COLOR_BLUE:
+        b = 5.0f;
+        break;
+    default:
+        r = 5.0f;
+        break;
+    }
+    float diffuse_material_color[] = { r*0.2f,g*0.2f,b*0.2f,1.0f };
+    float specular_material_color[] = { r*0.2f,g*0.2f,b*0.2f,0.7f };
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_material_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_material_color);

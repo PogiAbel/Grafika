@@ -7,5 +7,4 @@ Interakciók:
 
  - Szobában sétálni
  - Tűz animáció gyorsítása, lassitása
- - Füst sűrűsség állítása -> esetleges sok füst köd hatást teremt
  - Tűz mértékének, nagyságának növelése, csökkentése -> ez módosítsa a fényerőt.

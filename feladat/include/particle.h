@@ -15,6 +15,20 @@ typedef struct Particle
     float life;         // Lifetime
 }Particle;
 
+typedef enum FireEvent {
+    FIRE_EVENT_NONE,
+    FIRE_EVENT_PARTICLE_COUNT,
+    FIRE_EVENT_LIFETIME,
+    FIRE_EVENT_VELOCITY_RANGE,
+    FIRE_EVENT_SIZE
+}FireEvent;
+
+typedef enum FireColor {
+    FIRE_COLOR_RED,
+    FIRE_COLOR_GREEN,
+    FIRE_COLOR_BLUE
+}FireColor;
+
 typedef struct ParticleSystem
 {
     Particle* particles;
@@ -24,16 +38,10 @@ typedef struct ParticleSystem
     int particle_count;
     float start[3];
     GLuint texture;
+    FireColor fire_color;
 }ParticleSystem;
 
 
-typedef enum FireEvent {
-    FIRE_EVENT_NONE,
-    FIRE_EVENT_PARTICLE_COUNT,
-    FIRE_EVENT_LIFETIME,
-    FIRE_EVENT_VELOCITY_RANGE,
-    FIRE_EVENT_SIZE
-}FireEvent;
 
 /* initalize particle system */
 void init_particle(ParticleSystem* ps,int particle_count, float particle_lifetime, float particle_size, float particle_velocity_range);

@@ -1,7 +1,7 @@
 #include "app.h"
 
 
-int init_app(App* app, int width, int height){
+int init_app(App* app, int width, int height, int argc, char** argv){
 
     // Initialize SDL2
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -10,12 +10,21 @@ int init_app(App* app, int width, int height){
 
     // Create a window
     app->window = SDL_CreateWindow("Fire Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    // app->window = SDL_CreateWindow("My Window",
+    //                                   SDL_WINDOWPOS_UNDEFINED,
+    //                                   SDL_WINDOWPOS_UNDEFINED,
+    //                                   0, 0,
+    //                                   SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     if (!app->window) {
         fprintf(stderr, "Failed to create window: %s\n", SDL_GetError());
         SDL_Quit();
         return 1;
     }
+    SDL_DisplayMode dm;
+    SDL_GetDesktopDisplayMode(0, &dm);
+    dm.w = width;
+    dm.h = height;
 
     // Create an OpenGL context
     app->gl_context = SDL_GL_CreateContext(app->window);
@@ -38,6 +47,9 @@ int init_app(App* app, int width, int height){
         return 1;
     }
 
+    // Initialize GLUT
+    glutInit(&argc, argv);
+
     // Create a renderer
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
@@ -50,24 +62,26 @@ int init_app(App* app, int width, int height){
     init_particle(&app->ps,200, 3.0f, 0.15f, 0.6f);
 
     init_opengl();
+    // reshape(width, height);
     init_scene(&app->scene);
 
     // Set up parameters
     app->event = FIRE_EVENT_NONE;
     app->is_running = true;
+    app->help_menu = false;
 
 
     // Set up the projection matrix
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, (double)width / (double)height, 0.1, 100.0);
+    gluPerspective(45.0, (double)dm.w / (double)dm.h, 0.1, 100.0);
 
     // Set up the modelview matrix
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     // Set up the viewport
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, dm.w, dm.h);
     // Set up camera
     init_camera(&app->camera);
 
@@ -94,16 +108,51 @@ void init_opengl()
     glEnable(GL_LIGHT0);
 }
 
+void reshape(GLsizei width, GLsizei height)
+{
+    int x, y, w, h;
+    double ratio;
+
+    ratio = (double)width / height;
+    if (ratio > VIEWPORT_RATIO) {
+        w = (int)((double)height * VIEWPORT_RATIO);
+        h = height;
+        x = (width - w) / 2;
+        y = 0;
+    }
+    else {
+        w = width;
+        h = (int)((double)width / VIEWPORT_RATIO);
+        x = 0;
+        y = (height - h) / 2;
+    }
+
+    glViewport(x, y, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum(
+        -.08, .08,
+        -.06, .06,
+        .1, 10
+    );
+}
+
 void render(App* app){
+
+    if(app->help_menu){
+        render_help_menu(&app->scene);
+    }else{
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
 
     glPushMatrix();
     set_view(&(app->camera));
-    set_lighting();
+    set_lighting(&app->scene);
     render_particle(&app->ps,&app->camera);
     render_scene(&app->scene);
     glPopMatrix();
+    }
 
     // Swap the buffers
     SDL_GL_SwapWindow(app->window);
@@ -177,18 +226,26 @@ void handle_events(App* app){
             case SDL_SCANCODE_ESCAPE:
                 app->is_running = false;;
                 break;
+            // Camera controls
             case SDL_SCANCODE_W:
-                set_camera_speed(&(app->camera), 2);
+                set_camera_speed(&(app->camera), 4);
                 break;
             case SDL_SCANCODE_S:
-                set_camera_speed(&(app->camera), -2);
+                set_camera_speed(&(app->camera), -4);
                 break;
             case SDL_SCANCODE_A:
-                set_camera_side_speed(&(app->camera), 2);
+                set_camera_side_speed(&(app->camera), 4);
                 break;
             case SDL_SCANCODE_D:
-                set_camera_side_speed(&(app->camera), -2);
+                set_camera_side_speed(&(app->camera), -4);
                 break;
+            case SDL_SCANCODE_Q:
+                app->camera.position.z -= 1.0f;
+                break;
+            case SDL_SCANCODE_E:
+                app->camera.position.z += 1.0f;
+                break;
+            // Particle controls
             case SDL_SCANCODE_H:
                 app->event = FIRE_EVENT_PARTICLE_COUNT;
                 break;
@@ -210,27 +267,42 @@ void handle_events(App* app){
             case SDL_SCANCODE_UP:
                 fire_event(&app->event, &app->ps, 0.1f);
                 break;
-            case SDL_SCANCODE_Q:
-                app->camera.position.z += 1.0f;
-                break;
-            case SDL_SCANCODE_E:
-                app->camera.position.z -= 1.0f;
-                break;
+            // Light controls
             case SDL_SCANCODE_F:
-                app->ps.start[0] += 0.1f;
-                printf("x:%f, y%f\n", app->ps.start[0], app->ps.start[1]);
+                app->scene.light_y += 0.5f;
+                printf("Light pos: %f %f %f\n", app->scene.light_x, app->scene.light_y, app->scene.light_z);
                 break;
             case SDL_SCANCODE_C:
-                app->ps.start[1] += 0.1f;
-                printf("x:%f, y%f\n", app->ps.start[0], app->ps.start[1]);
+                app->scene.light_x -= 0.5f;
+                printf("Light pos: %f %f %f\n", app->scene.light_x, app->scene.light_y, app->scene.light_z);
                 break;
             case SDL_SCANCODE_V:
-                app->ps.start[0] -= 0.1f;
-                printf("x:%f, y%f\n", app->ps.start[0], app->ps.start[1]);
+                app->scene.light_y -= 0.5f;
+                printf("Light pos: %f %f %f\n", app->scene.light_x, app->scene.light_y, app->scene.light_z);
+                break;
+            case SDL_SCANCODE_Y:
+                app->scene.light_x += 0.5f;
+                printf("Light pos: %f %f %f\n", app->scene.light_x, app->scene.light_y, app->scene.light_z);
+                break;
+            case SDL_SCANCODE_X:
+                app->scene.light_z -= 0.5f;
+                break;
+            case SDL_SCANCODE_N:
+                app->scene.light_z += 0.5f;
+                break;
+            // Fire color controls
+            case SDL_SCANCODE_R:
+                app->ps.fire_color = FIRE_COLOR_RED;
+                break;
+            case SDL_SCANCODE_G:
+                app->ps.fire_color = FIRE_COLOR_GREEN;
                 break;
             case SDL_SCANCODE_B:
-                app->ps.start[1] -= 0.1f;
-                printf("x:%f, y%f\n", app->ps.start[0], app->ps.start[1]);
+                app->ps.fire_color = FIRE_COLOR_BLUE;
+                break;
+            // Help menu
+            case SDL_SCANCODE_F1:
+            app->help_menu = !app->help_menu;
                 break;
             default:
                 break;

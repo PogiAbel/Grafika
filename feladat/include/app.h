@@ -4,12 +4,16 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <GL/glew.h>
+#include <GL/glut.h>
 #include <stdbool.h>
 
 #include "particle.h"
 #include "scene.h"
 #include "camera.h"
 #include "text.h"
+
+#define VIEWPORT_RATIO (4.0 / 3.0)
+#define VIEWPORT_ASPECT 50.0
 
 typedef struct App{
     SDL_Window *window;
@@ -21,13 +25,16 @@ typedef struct App{
     double uptime;
     bool is_running;
     Camera camera;
+    bool help_menu;
 }App;
 
-/* initialize SDL, OpenGL, SDL_image, SDL_ttf, GLU, GLEW*/
-int init_app(App* app, int width, int height);
+/* initialize SDL, OpenGL, SDL_image, SDL_ttf, GLU, GLEW, GLUT*/
+int init_app(App* app, int width, int height, int argc, char** argv);
 
 /* initialize OpenGL */
 void init_opengl();
+
+void reshape(int width, int height);
 
 /* handle events*/
 void handle_events(App* app);

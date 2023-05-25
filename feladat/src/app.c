@@ -10,7 +10,7 @@ int init_app(App* app, int width, int height, int argc, char** argv){
 
     // Create a window
     // app->window = SDL_CreateWindow("Fire Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-    app->window = SDL_CreateWindow("My Window",
+    app->window = SDL_CreateWindow("Fire Simulator",
                                       SDL_WINDOWPOS_UNDEFINED,
                                       SDL_WINDOWPOS_UNDEFINED,
                                       0, 0,
@@ -52,11 +52,6 @@ int init_app(App* app, int width, int height, int argc, char** argv){
 
     // Create a renderer
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-    // Initialize ttf
-    if (TTF_Init() < 0) {
-        printf("TTF_Init: %s\n", TTF_GetError());
-    }
 
     // Set up particle system
     init_particle(&app->ps,200, 3.0f, 0.15f, 0.6f);
@@ -259,9 +254,6 @@ void handle_events(App* app){
             case SDL_SCANCODE_L:
                 app->event = FIRE_EVENT_VELOCITY_RANGE;
                 break;
-            case SDL_SCANCODE_T:
-                // render_text(app->renderer,app->font, "Hello World!", 0, 0);
-                break;
             case SDL_SCANCODE_DOWN:
                 fire_event(&app->event, &app->ps, -0.1f);
                 break;
@@ -357,7 +349,6 @@ void destroy_app(App* app){
     SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->window);
 
-    TTF_Quit();
     SDL_Quit();
     free(app);
 }

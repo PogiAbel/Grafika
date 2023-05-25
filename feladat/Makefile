@@ -1,2 +1,2 @@
 all:
-	gcc -Iinclude/ src/main.c src/app.c src/particle.c src/texture.c src/camera.c src/utils.c src/text.c src/draw.c src/load.c src/model.c src/scene.c -lmingw32  -lopengl32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lglu32 -lfreeglut -lglew32 -o app.exe -Wall -Wextra -Wpedantic -g
+	gcc -Iinclude/ src/main.c src/app.c src/particle.c src/texture.c src/camera.c src/utils.c src/draw.c src/load.c src/model.c src/scene.c -lmingw32  -lopengl32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lglu32 -lfreeglut -lglew32 -o app.exe -Wall -Wextra -Wpedantic -g

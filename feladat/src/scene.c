@@ -152,10 +152,10 @@ void set_material(const Material* material)
 void update_scene(Scene* scene, float elapsed_time)
 {
     // lightz movement between 5.0 and 10.0
-    // GLfloat light_amplitude = 10.0f;
-    // GLfloat light_frequency = 1.0f;
-    // GLfloat light_offset = light_amplitude * sin(light_frequency * elapsed_time);
-    // scene->light_z = LIGHT_Z + light_offset;
+    GLfloat light_amplitude = 1.5f;
+    GLfloat light_frequency = 35.0f;
+    GLfloat light_offset = light_amplitude * sin(light_frequency * elapsed_time);
+    scene->light_z = LIGHT_Z + light_offset;
     
 }
 
@@ -177,11 +177,11 @@ void render_scene(Scene* scene)
     // draw_model(&scene->model[6]);
 
     // Draw the sphere over the light source
-    glTranslatef(scene->light_x, scene->light_y, scene->light_z);
-    glutSolidSphere(0.1, 20, 20);
-    glDisable(GL_TEXTURE_2D);
-    draw_origin();
-    glEnable(GL_TEXTURE_2D);
+    // glTranslatef(scene->light_x, scene->light_y, scene->light_z);
+    // glutSolidSphere(0.1, 20, 20);
+    // glDisable(GL_TEXTURE_2D);
+    // draw_origin();
+    // glEnable(GL_TEXTURE_2D);
 }
 
 void draw_origin()

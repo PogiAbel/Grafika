@@ -2,6 +2,8 @@
 
 #include <GL/glut.h>
 
+#define LIGHT_Z 5.5f
+
 void init_scene(Scene* scene){
 
     // load objects
@@ -11,6 +13,7 @@ void init_scene(Scene* scene){
     load_model(&scene->model[3],"./assets/models/trunk.obj");
     load_model(&scene->model[4],"./assets/models/top.obj");
     load_model(&scene->model[5],"./assets/models/trunk.obj");
+    load_model(&scene->model[6],"./assets/models/sky.obj");
     load_model(&scene->skybox_model,"./assets/models/sky.obj");
 
     // load textures
@@ -52,9 +55,14 @@ void init_scene(Scene* scene){
     scale_model(&scene->model[5], 10.0f,10.0f,10.0f);
     translate_model(&scene->model[5], -5.0f, -5.0f, -1.5f);
 
-    scene->light_x = -2.4f;
-    scene->light_y =  8.0f;
-    scene->light_z = 1.0f;
+    scale_model(&scene->model[6], 0.02f,0.02f,0.02f);
+    translate_model(&scene->model[6], 0.6f, -2.5f, -2.0f);
+
+    scene->light_x = 0.6f;
+    scene->light_y =  -3.0f;
+    scene->light_z = LIGHT_Z;
+
+    scene->cutoff = 30.0f;
 
     scene->material.ambient.red = 0.4;
     scene->material.ambient.green = 0.4;
@@ -64,19 +72,31 @@ void init_scene(Scene* scene){
     scene->material.diffuse.green = 0.8;
     scene->material.diffuse.blue = 0.8;
 
-    scene->material.specular.red = 0.8;
-    scene->material.specular.green = 0.8;
-    scene->material.specular.blue = 0.8;
+    scene->material.specular.red = 1.0;
+    scene->material.specular.green = 1.0;
+    scene->material.specular.blue = 1.0;
 
-    scene->material.shininess = 10.0;
+    scene->material.shininess = 100.0;
 }
 
-void set_lighting(Scene* scene)
+void set_lighting(Scene* scene, ParticleSystem* ps)
 {
-    glEnable(GL_DEPTH_TEST);
-    float ambient_light[] = { 0.4f, 0.4f, 0.4, 1.0f };
-    float diffuse_light[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    float specular_light[] = { 0.4f, 0.0f, 0.0f, 0.0f };
+    float ambient_light1[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+    float diffuse_light1[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    float specular_light1[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    float position1[] = { 0.0f, 0.0f, 0.2f, 1.0f};
+
+    glLightfv(GL_LIGHT1, GL_AMBIENT, ambient_light1);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse_light1);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, specular_light1);
+    glLightfv(GL_LIGHT1, GL_POSITION, position1);
+    glEnable(GL_LIGHT1);
+
+    float rgb[3];
+    get_rgb(rgb, ps->fire_color);
+    float ambient_light[] = { rgb[0]*0.2f, rgb[1]*0.2f, rgb[2]*0.2f, 1.0f };
+    float diffuse_light[] = { rgb[0]*0.2f, rgb[1]*0.2f, rgb[2]*0.2f, 1.0f };
+    float specular_light[] = { 1.0f, 1.0f,1.0f, 1.0f };
     float position[] = { scene->light_x, scene->light_y, scene->light_z, 1.0f};
     float spot_direction[] = { 0.0f, 0.0f, -1.0f };
 
@@ -86,16 +106,17 @@ void set_lighting(Scene* scene)
     glLightfv(GL_LIGHT0, GL_POSITION, position);
 
 
+
     // Set spotlight properties
-    // glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_direction);
-    // glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180.0f); // Set spot cutoff angle
-    // glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 0.0f);
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_direction);
+    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, scene->cutoff); // Set spot cutoff angle
+    glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 80.0f);
     
     // // Enable distance-based attenuation
-    // glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0f);
-    // glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 10.0f);
-    // glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.1f);
-    // glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.01f);
+    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0f);
+    glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 10.0f);
+    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.01f);
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.001f);
 
 }
 
@@ -118,24 +139,31 @@ void set_material(const Material* material)
         material->specular.green,
         material->specular.blue
     };
+    GLfloat emissive_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_material_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_material_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular_material_color);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emissive_color);
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &(material->shininess));
 }
 
-void update_scene(Scene* scene)
+void update_scene(Scene* scene, float elapsed_time)
 {
-
+    // lightz movement between 5.0 and 10.0
+    // GLfloat light_amplitude = 10.0f;
+    // GLfloat light_frequency = 1.0f;
+    // GLfloat light_offset = light_amplitude * sin(light_frequency * elapsed_time);
+    // scene->light_z = LIGHT_Z + light_offset;
+    
 }
 
 void render_scene(Scene* scene)
 {
 
     // draw origin
-    draw_origin();
+    // draw_origin();
 
     set_material(&(scene->material));
 
@@ -146,10 +174,14 @@ void render_scene(Scene* scene)
     draw_model_texture(&scene->model[3], scene->texture_id[3]);
     draw_model_texture(&scene->model[4], scene->texture_id[4]);
     draw_model_texture(&scene->model[5], scene->texture_id[5]);
+    // draw_model(&scene->model[6]);
 
     // Draw the sphere over the light source
-    // glTranslatef(scene->light_x, scene->light_y, scene->light_z);
-    // glutSolidSphere(0.1, 20, 20);
+    glTranslatef(scene->light_x, scene->light_y, scene->light_z);
+    glutSolidSphere(0.1, 20, 20);
+    glDisable(GL_TEXTURE_2D);
+    draw_origin();
+    glEnable(GL_TEXTURE_2D);
 }
 
 void draw_origin()

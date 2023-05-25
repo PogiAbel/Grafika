@@ -59,4 +59,6 @@ void set_fire_material();
 /* destroy particle system */
 void destroy_particle(ParticleSystem* ps);
 
+void get_rgb(float* rgb,FireColor color);
+
 #endif /* PARTICLE_H */

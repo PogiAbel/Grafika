@@ -9,12 +9,12 @@ int init_app(App* app, int width, int height, int argc, char** argv){
     }
 
     // Create a window
-    app->window = SDL_CreateWindow("Fire Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-    // app->window = SDL_CreateWindow("My Window",
-    //                                   SDL_WINDOWPOS_UNDEFINED,
-    //                                   SDL_WINDOWPOS_UNDEFINED,
-    //                                   0, 0,
-    //                                   SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    // app->window = SDL_CreateWindow("Fire Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    app->window = SDL_CreateWindow("My Window",
+                                      SDL_WINDOWPOS_UNDEFINED,
+                                      SDL_WINDOWPOS_UNDEFINED,
+                                      0, 0,
+                                      SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     if (!app->window) {
         fprintf(stderr, "Failed to create window: %s\n", SDL_GetError());
@@ -23,8 +23,8 @@ int init_app(App* app, int width, int height, int argc, char** argv){
     }
     SDL_DisplayMode dm;
     SDL_GetDesktopDisplayMode(0, &dm);
-    dm.w = width;
-    dm.h = height;
+    // dm.w = width;
+    // dm.h = height;
 
     // Create an OpenGL context
     app->gl_context = SDL_GL_CreateContext(app->window);
@@ -148,7 +148,7 @@ void render(App* app){
 
     glPushMatrix();
     set_view(&(app->camera));
-    set_lighting(&app->scene);
+    set_lighting(&app->scene,&app->ps);
     render_particle(&app->ps,&app->camera);
     render_scene(&app->scene);
     glPopMatrix();
@@ -169,6 +169,7 @@ void update_app(App* app)
 
     update_camera(&(app->camera), elapsed_time);
     update_particle(&app->ps,elapsed_time);
+    update_scene(&app->scene, current_time);
 }
 
 void fire_event(FireEvent* event, ParticleSystem* ps, float value){
@@ -280,14 +281,14 @@ void handle_events(App* app){
                 app->scene.light_y -= 0.5f;
                 printf("Light pos: %f %f %f\n", app->scene.light_x, app->scene.light_y, app->scene.light_z);
                 break;
-            case SDL_SCANCODE_Y:
+            case SDL_SCANCODE_N:
                 app->scene.light_x += 0.5f;
                 printf("Light pos: %f %f %f\n", app->scene.light_x, app->scene.light_y, app->scene.light_z);
                 break;
             case SDL_SCANCODE_X:
                 app->scene.light_z -= 0.5f;
                 break;
-            case SDL_SCANCODE_N:
+            case SDL_SCANCODE_M:
                 app->scene.light_z += 0.5f;
                 break;
             // Fire color controls

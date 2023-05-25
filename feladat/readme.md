@@ -8,3 +8,11 @@ Interakciók:
  - Tűz részecskék manipulálása: rászecskeszám, -méret, -élettartam, -kilengés
  - Tűz fényének módosítása: piros, zöld, kék
  - Help menu
+
+
+
+
+
+
+
+A skybox textúrát [itt](https://skybox.blockadelabs.com/) generáltam.
